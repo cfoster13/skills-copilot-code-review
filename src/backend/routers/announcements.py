@@ -33,7 +33,7 @@ def _ensure_announcement_permission(announcement_doc: Optional[Dict[str, Any]], 
 
     Allows access if:
     - the announcement exists, and
-    - the user is the creator (created_by) or has admin privileges (user.get("is_admin") is truthy).
+    - the user is the creator (created_by) or has admin role (user.get("role") == "admin").
     """
     if not announcement_doc:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Announcement not found")
@@ -82,10 +82,7 @@ def update_announcement(announcement_id: str, announcement: Announcement, user: 
     if existing_announcement and "created_by" in existing_announcement:
         data["created_by"] = existing_announcement["created_by"]
 
-    result = announcements_collection.update_one({"_id": announcement_id}, {"$set": data})
-    if result.matched_count == 0:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Announcement not found")
-
+    announcements_collection.update_one({"_id": announcement_id}, {"$set": data})
     data["_id"] = announcement_id
     return data
 
@@ -98,7 +95,5 @@ def delete_announcement(announcement_id: str, user: Optional[Dict[str, Any]] = D
     existing_announcement = announcements_collection.find_one({"_id": announcement_id})
     _ensure_announcement_permission(existing_announcement, user, action="delete")
 
-    result = announcements_collection.delete_one({"_id": announcement_id})
-    if result.deleted_count == 0:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Announcement not found")
+    announcements_collection.delete_one({"_id": announcement_id})
     return {"success": True}
