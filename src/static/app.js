@@ -161,6 +161,13 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
     // Save announcement (add or update)
+    /**
+     * Converts a date string in YYYY-MM-DD format to a UTC ISO 8601 timestamp.
+     * This ensures dates are stored consistently without timezone shifts.
+     * 
+     * @param {string} dateStr - Date string in YYYY-MM-DD format
+     * @returns {string|null} ISO 8601 timestamp in UTC, or null if invalid
+     */
     function toIsoUtcDate(dateStr) {
       if (!dateStr) return null;
       const parts = dateStr.split("-");
@@ -168,7 +175,11 @@ document.addEventListener("DOMContentLoaded", () => {
       const year = Number(parts[0]);
       const month = Number(parts[1]);
       const day = Number(parts[2]);
+      // Validate that all parts are integers and within valid ranges
       if (!Number.isInteger(year) || !Number.isInteger(month) || !Number.isInteger(day)) {
+        return null;
+      }
+      if (year <= 0 || month < 1 || month > 12 || day < 1 || day > 31) {
         return null;
       }
       const utcDate = new Date(Date.UTC(year, month - 1, day));
