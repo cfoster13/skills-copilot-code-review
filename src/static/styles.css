@@ -1,3 +1,126 @@
+/* Announcement Banner */
+.announcement-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(90deg, #ffe082 0%, #fffde7 100%);
+  color: #6d4c00;
+  font-size: 1.1rem;
+  font-weight: 600;
+  padding: 0.75em 1em;
+  border-bottom: 2px solid #ffd54f;
+  margin-bottom: 0.5em;
+  transition: all 0.3s;
+}
+.announcement-banner.hidden {
+  display: none;
+}
+
+/* Announcement Management Button */
+#manage-announcements-btn {
+  margin-left: 1em;
+  background: #fffde7;
+  color: #6d4c00;
+  border: 1px solid #ffd54f;
+  border-radius: 6px;
+  padding: 0.4em 0.8em;
+  font-size: 1em;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+  transition: background 0.2s;
+}
+#manage-announcements-btn:hover {
+  background: #ffe082;
+}
+
+/* Announcement Modal */
+#announcement-modal .announcement-modal-content {
+  max-width: 480px;
+  background: #fffde7;
+  border-radius: 10px;
+  padding: 2em 1.5em;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+  position: relative;
+}
+#announcement-modal h3 {
+  margin-top: 0;
+  color: #6d4c00;
+}
+#announcement-list {
+  margin-bottom: 1em;
+}
+.announcement-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  background: #fff8e1;
+  border: 1px solid #ffe082;
+  border-radius: 6px;
+  padding: 0.7em 1em;
+  margin-bottom: 0.5em;
+}
+.announcement-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2em;
+}
+.announcement-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3em;
+}
+.announcement-actions button {
+  background: #ffd54f;
+  color: #6d4c00;
+  border: none;
+  border-radius: 4px;
+  padding: 0.3em 0.7em;
+  font-size: 0.95em;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.announcement-actions button:hover {
+  background: #ffe082;
+}
+#announcement-form .form-group {
+  margin-bottom: 0.7em;
+}
+#announcement-form label {
+  font-weight: 500;
+  color: #6d4c00;
+}
+#announcement-form input,
+#announcement-form textarea {
+  width: 100%;
+  padding: 0.4em;
+  border: 1px solid #ffd54f;
+  border-radius: 4px;
+  font-size: 1em;
+  margin-top: 0.2em;
+  background: #fff;
+}
+#announcement-form textarea {
+  min-height: 60px;
+  resize: vertical;
+}
+#save-announcement-btn {
+  background: #ffd54f;
+  color: #6d4c00;
+  border: none;
+  border-radius: 4px;
+  padding: 0.5em 1.2em;
+  font-size: 1em;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 0.5em;
+  transition: background 0.2s;
+}
+#save-announcement-btn:hover {
+  background: #ffe082;
+}
 /* Color palette */
 :root {
   /* Primary colors */

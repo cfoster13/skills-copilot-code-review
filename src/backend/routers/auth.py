@@ -1,3 +1,13 @@
+from fastapi import Depends, Request
+
+def get_current_user(request: Request):
+    username = request.headers.get("X-User")
+    if not username:
+        return None
+    teacher = teachers_collection.find_one({"_id": username})
+    if not teacher:
+        return None
+    return teacher
 """
 Authentication endpoints for the High School Management System API
 """
