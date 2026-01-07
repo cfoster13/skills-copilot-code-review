@@ -13,17 +13,21 @@ class Announcement(BaseModel):
     message: str
     start_date: Optional[str] = None
     expiration_date: str
-    created_by: str
+    created_by: Optional[str] = None  # Make optional for input
 
 @router.get("/announcements", response_model=List[Announcement])
 def get_announcements():
     now = datetime.now().isoformat()
     announcements = list(announcements_collection.find({
-        "$or": [
-            {"start_date": None},
-            {"start_date": {"$lte": now}}
-        ],
-        "expiration_date": {"$gte": now}
+        "$and": [
+            {
+                "$or": [
+                    {"start_date": None},
+                    {"start_date": {"$lte": now}}
+                ]
+            },
+            {"expiration_date": {"$gte": now}}
+        ]
     }))
     return announcements
 
