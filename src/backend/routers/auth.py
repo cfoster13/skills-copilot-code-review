@@ -2,7 +2,7 @@
 Authentication endpoints for the High School Management System API
 """
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request
 from typing import Dict, Any
 
 from ..database import teachers_collection, verify_password
@@ -11,6 +11,16 @@ router = APIRouter(
     prefix="/auth",
     tags=["auth"]
 )
+
+
+def get_current_user(request: Request):
+    username = request.headers.get("X-User")
+    if not username:
+        return None
+    teacher = teachers_collection.find_one({"_id": username})
+    if not teacher:
+        return None
+    return teacher
 
 
 @router.post("/login")
