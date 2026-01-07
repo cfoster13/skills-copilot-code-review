@@ -2,6 +2,7 @@
 MongoDB database configuration and setup for Mergington High School API
 """
 
+import datetime
 from pymongo import MongoClient
 from argon2 import PasswordHasher, exceptions as argon2_exceptions
 
@@ -193,13 +194,11 @@ initial_activities = {
     }
 }
 
-import datetime
-
 # Example announcements
 initial_announcements = [
     {
         "title": "Welcome Back!",
-        "message": "School resumes on January 10th. Please check your schedules.",
+        "message": "Welcome back to school! Please check your schedules for the latest class times.",
         "start_date": None,
         "expiration_date": (datetime.datetime.now() + datetime.timedelta(days=14)).isoformat(),
         "created_by": "principal",

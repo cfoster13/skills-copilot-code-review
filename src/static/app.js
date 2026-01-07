@@ -69,17 +69,41 @@ document.addEventListener("DOMContentLoaded", () => {
         announcements.forEach((a) => {
           const item = document.createElement("div");
           item.className = "announcement-item";
-          item.innerHTML = `
-            <div class="announcement-details">
-              <strong>${a.title}</strong>
-              <span>${a.message}</span>
-              <span>Expires: ${a.expiration_date ? a.expiration_date.split("T")[0] : ""}</span>
-            </div>
-            <div class="announcement-actions">
-              <button class="edit-announcement-btn" data-id="${a.id || a._id}">Edit</button>
-              <button class="delete-announcement-btn" data-id="${a.id || a._id}">Delete</button>
-            </div>
-          `;
+
+          const detailsDiv = document.createElement("div");
+          detailsDiv.className = "announcement-details";
+
+          const titleElement = document.createElement("strong");
+          titleElement.textContent = a.title || "";
+
+          const messageElement = document.createElement("span");
+          messageElement.textContent = a.message || "";
+
+          const expiresElement = document.createElement("span");
+          expiresElement.textContent = "Expires: " + (a.expiration_date ? a.expiration_date.split("T")[0] : "");
+
+          detailsDiv.appendChild(titleElement);
+          detailsDiv.appendChild(messageElement);
+          detailsDiv.appendChild(expiresElement);
+
+          const actionsDiv = document.createElement("div");
+          actionsDiv.className = "announcement-actions";
+
+          const editButton = document.createElement("button");
+          editButton.className = "edit-announcement-btn";
+          editButton.dataset.id = a.id || a._id;
+          editButton.textContent = "Edit";
+
+          const deleteButton = document.createElement("button");
+          deleteButton.className = "delete-announcement-btn";
+          deleteButton.dataset.id = a.id || a._id;
+          deleteButton.textContent = "Delete";
+
+          actionsDiv.appendChild(editButton);
+          actionsDiv.appendChild(deleteButton);
+
+          item.appendChild(detailsDiv);
+          item.appendChild(actionsDiv);
           announcementList.appendChild(item);
         });
         // Add event listeners for edit/delete
@@ -96,19 +120,26 @@ document.addEventListener("DOMContentLoaded", () => {
     // Edit announcement
     async function editAnnouncement(id) {
       try {
-        const response = await fetch("/announcements", {
+        const response = await fetch(`/announcements/${encodeURIComponent(id)}`, {
           headers: currentUser ? { "X-User": currentUser.username } : {}
         });
-        if (!response.ok) return;
-        const announcements = await response.json();
-        const a = announcements.find(x => (x.id || x._id) === id);
-        if (!a) return;
+        if (!response.ok) {
+          console.error("Failed to load announcement for editing:", response.status, response.statusText);
+          return;
+        }
+        const a = await response.json();
+        if (!a) {
+          console.error("Announcement not found for id:", id);
+          return;
+        }
         announcementIdInput.value = id;
-        announcementTitleInput.value = a.title;
-        announcementMessageInput.value = a.message;
+        announcementTitleInput.value = a.title || "";
+        announcementMessageInput.value = a.message || "";
         announcementStartDateInput.value = a.start_date ? a.start_date.split("T")[0] : "";
         announcementExpirationDateInput.value = a.expiration_date ? a.expiration_date.split("T")[0] : "";
-      } catch (error) {}
+      } catch (error) {
+        console.error("Error loading announcement for editing:", error);
+      }
     }
     // Delete announcement
     async function deleteAnnouncement(id) {
@@ -130,13 +161,30 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
     // Save announcement (add or update)
+    function toIsoUtcDate(dateStr) {
+      if (!dateStr) return null;
+      const parts = dateStr.split("-");
+      if (parts.length !== 3) return null;
+      const year = Number(parts[0]);
+      const month = Number(parts[1]);
+      const day = Number(parts[2]);
+      if (!Number.isInteger(year) || !Number.isInteger(month) || !Number.isInteger(day)) {
+        return null;
+      }
+      const utcDate = new Date(Date.UTC(year, month - 1, day));
+      if (Number.isNaN(utcDate.getTime())) {
+        return null;
+      }
+      return utcDate.toISOString();
+    }
+
     announcementForm.addEventListener("submit", async (event) => {
       event.preventDefault();
       const id = announcementIdInput.value;
       const title = announcementTitleInput.value.trim();
       const message = announcementMessageInput.value.trim();
-      const startDate = announcementStartDateInput.value ? new Date(announcementStartDateInput.value).toISOString() : null;
-      const expirationDate = announcementExpirationDateInput.value ? new Date(announcementExpirationDateInput.value).toISOString() : null;
+      const startDate = toIsoUtcDate(announcementStartDateInput.value);
+      const expirationDate = toIsoUtcDate(announcementExpirationDateInput.value);
       if (!title || !message || !expirationDate) {
         showAnnouncementModalMessage("Title, message, and expiration date are required.", "error");
         return;

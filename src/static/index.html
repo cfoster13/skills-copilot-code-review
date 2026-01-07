@@ -33,10 +33,10 @@
         </button>
       </div>
         <!-- Announcement Management Modal -->
-        <div id="announcement-modal" class="modal hidden">
+        <div id="announcement-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="announcement-modal-title">
           <div class="modal-content announcement-modal-content">
-            <span class="close-announcement-modal">&times;</span>
-            <h3>Manage Announcements</h3>
+            <span class="close-announcement-modal" role="button" aria-label="Close" tabindex="0">&times;</span>
+            <h3 id="announcement-modal-title">Manage Announcements</h3>
             <div id="announcement-list"></div>
             <form id="announcement-form">
               <input type="hidden" id="announcement-id" />
